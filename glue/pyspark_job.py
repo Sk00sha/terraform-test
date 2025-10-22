@@ -1,20 +1,21 @@
 import sys
-from pyspark.context import SparkContext
-from awsglue.context import GlueContext
 from awsglue.utils import getResolvedOptions
 
-args = getResolvedOptions(sys.argv, ['JOB_NAME', 'output_path'])
+# Glue passes arguments as --key value pairs
+args = getResolvedOptions(sys.argv, ['JOB_NAME', 'my_flag'])
 
-sc = SparkContext()
-glueContext = GlueContext(sc)
-spark = glueContext.spark_session
+my_flag = args['my_flag'].lower() == 'true'
 
-# Dummy DataFrame
-data = [("Alice", 10), ("Bob", 20), ("Charlie", 30)]
-columns = ["name", "value"]
-df = spark.createDataFrame(data, columns)
+print(f"✅ Starting Glue job: {args['JOB_NAME']}")
+print(f"Received my_flag = {my_flag}")
 
-output_path = args["output_path"]
-df.write.mode("overwrite").parquet(output_path)
+if my_flag:
+    print("Doing TRUE branch logic...")
+    # Example logic
+    # perform_data_load()
+else:
+    print("Doing FALSE branch logic...")
+    # Example logic
+    # skip_data_load()
 
-print(f"✅ Wrote dummy data to {output_path}")
+print("✅ Job completed successfully.")
